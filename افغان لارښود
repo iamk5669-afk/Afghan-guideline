@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ps" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>افغان لارښود</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        body { background-color: #f4f7f6; padding: 15px; padding-bottom: 80px; }
+        .card { background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { color: #333; margin-bottom: 15px; border-bottom: 2px solid #0066cc; padding-bottom: 5px; font-size: 18px; }
+        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 5px; text-align: right; }
+        .btn { background-color: #0066cc; color: white; padding: 12px; border: none; border-radius: 5px; font-size: 14px; cursor: pointer; font-weight: bold; }
+        
+        .tab-container { 
+            display: flex; 
+            overflow-x: auto; 
+            white-space: nowrap; 
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 20px; 
+            background: #0066cc; 
+            border-radius: 8px; 
+            padding: 6px; 
+        }
+        .tab-btn { 
+            background: none; 
+            border: none; 
+            padding: 12px 18px; 
+            font-size: 14px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            color: white;
+            border-radius: 5px; 
+        }
+        .tab-btn.active { background: white; color: #0066cc; }
+        .page { display: none; }
+        .page.active { display: block; }
+        .post-box { background: #fff; padding: 15px; border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 15px; }
+        .post-user { font-weight: bold; color: #0066cc; font-size: 14px; }
+        .chat-btn { background: #28a745; color: white; padding: 4px 10px; border: none; border-radius: 4px; font-size: 12px; cursor: pointer; margin-top: 10px; }
+        .chat-box { background: #eef5fc; padding: 10px; border-radius: 8px; max-height: 200px; overflow-y: auto; margin-bottom: 10px; }
+        .msg-in { background: white; padding: 8px; margin: 5px 0; border-radius: 5px; width: fit-content; max-width: 80%; }
+        .whatsapp-float { position: fixed; bottom: 20px; right: 20px; background-color: #25D366; color: white; width: 60px; height: 60px; border-radius: 50%; text-align: center; font-size: 30px; line-height: 60px; text-decoration: none; z-index: 1000; }
+        .list-item { background: #eef5fc; padding: 12px; margin: 8px 0; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
+    </style>
+</head>
+<body>
+
+    <!-- د ننووتلو برخه -->
+    <div id="loginPage" class="card" style="margin-top: 50px;">
+        <h2 style="text-align:center;">🇦🇫 د افغان لارښود اپلیکیشن</h2>
+        <input type="tel" id="userPhone" placeholder="خپل د موبایل شمیره ولیکئ" value="0799112233">
+        <button class="btn" style="width:100%; margin-top:10px;" onclick="startApp()">ننوتل / حساب جوړول</button>
+    </div>
+
+    <!-- اصلي مینو او پاڼې -->
+    <div id="mainApp" style="display: none;">
+        
+        <div class="tab-container">
+            <button class="tab-btn active" onclick="switchPage('postsPage', this)">📰 عمومي پاڼه</button>
+            <button class="tab-btn" onclick="switchPage('scholarshipsPage', this)">🎓 بورسونه او ویزې</button>
+            <button class="tab-btn" onclick="switchPage('embassiesPage', this)">🏛️ سفارتونه</button>
+            <button class="tab-btn" onclick="switchPage('dangerPathsPage', this)">⚠️ قاچاقي لارې</button>
+            <button class="tab-btn" onclick="switchPage('chatPage', this)">💬 مسنجر</button>
+            <button class="tab-btn" style="background:#ffc107; color:black;" onclick="switchPage('profilePage', this)">👤 پروفایل</button>
+            <button class="tab-btn" style="background:#dc3545; color:white;" onclick="switchPage('adminPage', this)">👑 اډمین</button>
+        </div>
+
+        <!-- عمومي پاڼه -->
+        <div id="postsPage" class="page active">
+            <div class="card">
+                <h2>✍️ نوی پوسټ خپرول</h2>
+                <textarea id="postText" rows="2" placeholder="ملګرو! دلته خپل معلومات ولیکئ..."></textarea>
+                <button class="btn" onclick="addPost()">پوسټ کړه</button>
+            </div>
+            <h2>📌 وروستي پوسټونه:</h2>
+            <div id="feed"></div>
+        </div>
+
+        <!-- بورسونه -->
+        <div id="scholarshipsPage" class="page card">
+            <h2>🎓 د بورسونو او تحصیلي ویزو بخش</h2>
+            <div class="list-item"><span>📌 د جرمني هیواد تحصیلي بورسیه (۲۰۲۶)</span></div>
+        </div>
+
+        <!-- سفارتونه -->
+        <div id="embassiesPage" class="page card">
+            <h2>🏛️ د بهرنیو هیوادونو سفارتخانې</h2>
+            <div class="list-item"><span>📞 د پاکستان سفارت: 070111222</span></div>
+        </div>
+
+        <!-- قاچاقي لارې -->
+        <div id="dangerPathsPage" class="page card" style="border-right: 5px solid #dc3545;">
+            <h2>⚠️ د قاچاقي لارو خطرونه</h2>
+            <div style="background:#f8d7da; color:#721c24; padding:12px; border-radius:5px;">🚨 قاچاقي لارې ستاسو ژوند له خطر سره مخ کوي.</div>
+        </div>
+
+        <!-- مسنجر -->
+        <div id="chatPage" class="page card">
+            <h2>💬 مسنجر</h2>
+            <p id="chatWithTitle">د چا د پوست لاندې د مسج تڼۍ ووهئ.</p>
+            <div class="chat-box" id="chatBox"></div>
+            <div id="chatInputArea" style="display:none;">
+                <input type="text" id="msgText" placeholder="خپل مسج ولیکئ...">
+                <button class="btn" onclick="sendPrivateMsg()">لېږل</button>
+            </div>
+        </div>
+
+        <!-- پروفایل -->
+        <div id="profilePage" class="page card">
+            <h2>👤 زما پروفایل</h2>
+            <p>حالت: تایید شوی نه دی</p>
+            <input type="file" id="idDoc">
+            <button class="btn" style="background:#ffc107; color:black;" onclick="requestVerification()">اډمین ته لېږل</button>
+        </div>
+
+        <!-- اډمین -->
+        <div id="adminPage" class="page card" style="border-right: 5px solid #28a745;">
+            <h2>👑 د اډمین پینل</h2>
+            <p>ټول فعال کاروونکي: ۳,۴۲۰ تنه</p>
+            <div id="pendingContainer" style="margin-top:10px; background:#fff3cd; padding:10px; border-radius:5px;">
+                <span>غیرقانوني پیغام کشف شوی: "غواړم په قاچاقي لاره لاړ شم"</span>
+                <button class="btn" style="background:red; padding:3px 5px; font-size:12px; margin-top:5px;" onclick="approveMsg()">حذف کړه</button>
+            </div>
+        </div>
+
+    </div>
+
+    <a href="https://wa.me" class="whatsapp-float" target="_blank">💬</a>
+
+    <!-- 🧠 دا برخه جاوا سکرېپټ (عقل) دی -->
+    <script>
+        var currentPhone = "";
+        var dummyPosts = [{ phone: "0788556644", text: "سلام، چا د بورسیو معلومات لیدلي؟", time: "۱۰ دقيقې مخکې" }];
+
+        function startApp() {
+            currentPhone = document.getElementById('userPhone').value;
+            if(!currentPhone) return;
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            loadPosts();
+        }
+
+        function switchPage(pageId, element) {
+            var pages = document.getElementsByClassName('page');
+            for (var i = 0; i < pages.length; i++) pages[i].style.display = 'none';
+            document.getElementById(pageId).style.display = 'block';
+            
+            var tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(function(tab) { tab.style.background = 'none'; tab.style.color = 'white'; });
+            if(element) { element.style.background = 'white'; element.style.color = '#0066cc'; }
+        }
+
+        function loadPosts() {
+            var feed = document.getElementById('feed');
+            feed.innerHTML = "";
+            dummyPosts.forEach(function(post) {
+                feed.innerHTML += `<div class="post-box">👤 شمیره: ${post.phone}<p>${post.text}</p><button class="chat-btn" onclick="openChat('${post.phone}')">💬 مسج</button></div>`;
+            });
+        }
+
+        function addPost() {
+            var text = document.getElementById('postText').value;
+            if(!text.trim()) return;
+            dummyPosts.unshift({ phone: currentPhone, text: text, time: "همدا اوس" });
+            document.getElementById('postText').value = "";
+            loadPosts();
+        }
+
+        function openChat(targetPhone) {
+            document.getElementById('chatWithTitle').innerText = "مسج دغه شمیرې ته: " + targetPhone;
+            document.getElementById('chatInputArea').style.display = "block";
+            switchPage('chatPage', null);
+        }
+
+        function sendPrivateMsg() {
+            var msg = document.getElementById('msgText').value;
+            if(!msg.trim()) return;
+            if(msg.includes("قاچاق")) { alert("🚨 غیرقانوني کلمه بند شوه!"); } 
+            else { document.getElementById('chatBox').innerHTML += `<div class='msg-in'>${msg}</div>`; }
+            document.getElementById('msgText').value = "";
+        }
+
+        function requestVerification() { alert("سند اډمین ته ورسېد."); }
+        function approveMsg() { document.getElementById('pendingContainer').style.display = 'none'; }
+    </script>
+</body>
+</html>
